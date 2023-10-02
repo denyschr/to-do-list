@@ -3,9 +3,10 @@
 @import url("https://fonts.googleapis.com/css?family=Lato:regular,700&display=swap");
 
 :root {
-	--accent: #EA5959;
+	--accent: #D34936;
 	--priamry: #F3F3F3;
 	--scorpion: #5A5A5A;
+	--alto: #D8D8D8;
 }
 
 body {
@@ -14,7 +15,7 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: var(--accent);
+	background-color: #EA5959;
 }
 
 .wrapper{
@@ -34,7 +35,7 @@ body {
 .todo__sidebar {
 	min-width: 250px;
 	padding: 50px;
-	border-right: 1px solid #D8D8D8;
+	border-right: 1px solid var(--alto);
 }
 
 .sidebar-todo__list {
@@ -111,7 +112,6 @@ body {
 	background-color: var(--accent);
 	color: #fff;
 	font-size: 26px;
-	cursor: pointer;
 }
 
 .todo__tasks {
@@ -139,27 +139,31 @@ body {
 	display: none;
 }
 
-.todo__checkbox input:checked + div{
-	background-color: var(--accent);
+.todo__checkbox:hover div::after {
+	opacity: 1;
+	visibility: visible;
 }
 
 .todo__checkbox input:checked + div::after{
-	display: block;
+	opacity: 1;
+	visibility: visible;
 }
 
 .todo__checkbox div {
-	--size: 30px;
+	--size: 20px;
 	position: relative;
 	width: var(--size);
 	height: var(--size);
-	border: 1px solid var(--accent);
-	border-radius: 5px;
+	border: 2px solid var(--accent);
+	border-radius: 50%;
 	cursor: pointer;
+	background-color: #f121062d;
 }
 
 .todo__checkbox div::after {
 	content: '';
-	display: none;
+	opacity: 0;
+	visibility: hidden;
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -167,13 +171,9 @@ body {
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
-	width: 26px;
-	height: 26px;
-}
-
-.todo__task_completed .todo__task-text{
-	text-decoration: line-through;
-	color: rgba(0, 0, 0, 0.2);
+	width: 16px;
+	height: 16px;
+	transition: opacity .2s ease-in-out, visibility .2s ease-in-out;
 }
 
 .todo__task-text {
@@ -197,14 +197,14 @@ body {
 
 .completed-todo__task {
 	padding-bottom: 10px;
-	border-bottom: 1px solid #D8D8D8;
+	border-bottom: 1px solid var(--alto);
 }
 
 .completed-todo__date {
 	display: block;
 	margin-bottom: 15px;
 	padding-bottom: 10px;
-	border-bottom: 1px solid #D8D8D8;
+	border-bottom: 1px solid var(--alto);
 	font-weight: 700;
 }
 

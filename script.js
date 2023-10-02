@@ -1,10 +1,14 @@
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+const daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
 const dom = {
 	new: document.getElementById('new'),
 	add: document.getElementById('add'),
 	tasks: document.getElementById('tasks'),
 	navBtns: document.querySelectorAll('.sidebar-todo__button'),
 	contents: document.querySelectorAll('.todo__content'),
-	completed: document.querySelector('.todo__completed'),
+	completed: document.getElementById('completed'),
 }
 
 dom.navBtns.forEach(navBtn => {
@@ -26,7 +30,7 @@ const addedTasks = [];
 document.addEventListener('DOMContentLoaded', () => {
 	dom.add.disabled = true;
 	dom.add.style.opacity = 0.8;
-	dom.add.style.pointerEvents = 'none';
+	dom.add.style.cursor = 'not-allowed';
 	dom.new.addEventListener('input', () => {
 		setInterval(stateHandle, 100);
 	});
@@ -36,11 +40,11 @@ function stateHandle() {
 	if (dom.new.value === '') {
 		dom.add.disabled = true;
 		dom.add.style.opacity = 0.8;
-		dom.add.style.pointerEvents = 'none';
+		dom.add.style.cursor = 'not-allowed';
 	} else {
 		dom.add.disabled = false;
 		dom.add.style.opacity = 1;
-		dom.add.style.pointerEvents = 'all';
+		dom.add.style.cursor = 'pointer';
 	}
 }
 
@@ -56,7 +60,6 @@ function addTask(text, taskList) {
 	const task = {
 		id: timestamp,
 		text,
-		isCompleted: false
 	}
 	taskList.push(task);
 	taskRender(addedTasks);
@@ -66,13 +69,10 @@ function taskRender(taskList) {
 	let htmlContent = '';
 
 	for (let task in taskList) {
-		const cls = taskList[task].isCompleted ? 'todo__task todo__task_completed' : 'todo__task';
-		const checked = taskList[task].isCompleted ? 'checked' : '';
-
 		const taskContent = `
-		<li id=${taskList[task].id} class="${cls}">
+		<li id=${taskList[task].id} class="todo__task">
 			<label class="todo__checkbox">
-				<input type="checkbox" ${checked}>
+				<input type="checkbox">
 				<div class="todo__checkbox-div"></div>
 			</label>
 			<p class="todo__task-text">${taskList[task].text}</p>
@@ -94,8 +94,8 @@ dom.tasks.addEventListener('click', e => {
 	if (checkboxEl) {
 		const task = el.parentElement.parentElement;
 		const taskId = task.getAttribute('id');
+		task.remove();
 		changeTaskStatus(taskId, addedTasks);
-		taskRender(addedTasks);
 	}
 	if (btnDeleteEl) {
 		const task = el.parentElement.parentElement;
@@ -106,11 +106,32 @@ dom.tasks.addEventListener('click', e => {
 });
 
 function changeTaskStatus(id, taskList) {
-	taskList.forEach(task => {
+	let htmlContent = '';
+
+	const now = new Date();
+	const hours = now.getHours();
+	const minutes = now.getMinutes();
+	const date = now.getDate();
+	const day = daysOfTheWeek[now.getDay()];
+	const month = monthNames[now.getMonth()];
+
+	taskList.forEach((task, index) => {
 		if (task.id === parseInt(id)) {
-			task.isCompleted = !task.isCompleted;
+			const taskContent = `
+			<li class="completed-todo__task">
+				<time class="completed-todo__date" datetime="">${date} ${month} ‧ ${day}</time>
+				<div class="completed-todo__body">
+					<p class="completed-todo__text">
+						<strong>You</strong> completed a task: <span>${task.text}</span>
+					</p>
+					<time class="completed-todo__time">${hours}:${minutes}</time>
+				</div>
+			</li>`;
+			htmlContent += taskContent;
+			taskList.splice(index, 1);
 		}
 	});
+	dom.completed.innerHTML += htmlContent;
 }
 
 function deleteTask(id, taskList) {
