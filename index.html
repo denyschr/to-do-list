@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/style.css">
+	<title>To do list</title>
+</head>
+
+<body>
+	<div class="wrapper">
+		<div class="todo">
+			<aside class="todo__sidebar sidebar-todo">
+				<nav class="sidebar-todo__nav">
+					<ul class="sidebar-todo__list">
+						<li class="sidebar-todo__item"><button class="sidebar-todo__button sidebar-todo__button--active"
+								data-target="inbox">Inbox</button></li>
+						<li class="sidebar-todo__item"><button class="sidebar-todo__button"
+								data-target="completed">Completed</button></li>
+					</ul>
+				</nav>
+			</aside>
+			<div class="todo__content todo__content--active" id="inbox">
+				<h2 class="todo__title">Inbox</h2>
+				<form action="#" class="todo__form form-todo">
+					<input id="new" type="text" class="form-todo__input" placeholder="Add new task">
+					<button id="add" class="form-todo__add" title="Add task">+</button>
+				</form>
+				<ul id="tasks" class="todo__tasks"></ul>
+			</div>
+			<div class="todo__content" id="completed">
+				<h2 class="todo__title">Completed tasks</h2>
+				<ul class="todo__completed completed-todo">
+					<li class="completed-todo__task">
+						<time class="completed-todo__date" datetime="">2 October ‧ Today ‧ Monday</time>
+						<div class="completed-todo__body">
+							<p class="completed-todo__text">
+								<strong>You</strong> completed a task: <span>Bread</span>
+							</p>
+							<time class="completed-todo__time">12:00</time>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<script src="script.js"></script>
+</body>
+
+</html>

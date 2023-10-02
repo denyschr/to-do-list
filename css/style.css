@@ -1,0 +1,241 @@
+@import url('reset.css');
+
+@import url("https://fonts.googleapis.com/css?family=Lato:regular,700&display=swap");
+
+:root {
+	--accent: #EA5959;
+	--priamry: #F3F3F3;
+	--scorpion: #5A5A5A;
+}
+
+body {
+	font-family: 'Lato', sans-serif;
+	font-size: 18px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--accent);
+}
+
+.wrapper{
+	max-width: 980px;
+	width: 100%;
+}
+
+.todo {
+	display: flex;
+	column-gap: 53px;
+	min-height: 600px;
+	border-radius: 8px;
+	background: #FFF;
+	box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.25);
+}
+
+.todo__sidebar {
+	min-width: 250px;
+	padding: 50px;
+	border-right: 1px solid #D8D8D8;
+}
+
+.sidebar-todo__list {
+	display: flex;
+	flex-direction: column;
+	row-gap: 15px;
+}
+
+.sidebar-todo__button {
+	padding: 10px 15px;
+	border-radius: 8px;
+	background-color: transparent;
+	color: #525252;
+	font-size: 22px;
+	cursor: pointer;
+	transition: background .2s ease-in-out;
+}
+
+.sidebar-todo__button:hover {
+	background-color: var(--priamry);
+}
+
+.sidebar-todo__button--active {
+	color: var(--accent);
+	font-weight: 700;
+	pointer-events: none;
+}
+
+.todo__content {
+	display: none;
+	padding: 30px 43px 30px 0;
+	flex-grow: 1;
+}
+
+.todo__content--active {
+	display: block;
+}
+
+.todo__title {
+	margin-bottom: 35px;
+	color: #000;
+	font-size: 31px;
+	font-weight: 700;
+}
+
+.todo__form {
+	display: flex;
+	margin-bottom: 32px;
+}
+
+.form-todo__input {
+	flex-grow: 1;
+	margin-right: 16px;
+	padding: 15px 27px;
+	outline: none;
+	border-radius: 8px;
+	border: 2px solid var(--priamry);
+	background-color: var(--priamry);
+	font-family: 'Lato';
+	font-size: 18px;
+}
+
+.form-todo__input:focus {
+	border: 2px solid var(--accent);
+}
+
+.form-todo__input::placeholder {
+	color: #B5B5B5;
+}
+
+.form-todo__add {
+	padding: 10px 20px;
+	border-radius: 30px;
+	background-color: var(--accent);
+	color: #fff;
+	font-size: 26px;
+	cursor: pointer;
+}
+
+.todo__tasks {
+	display: flex;
+	flex-direction: column;
+	row-gap: 16px;
+}
+
+.todo__task {
+	display: flex;
+	align-items: center;
+	min-height: 30px;
+	cursor: default;
+}
+
+.todo__task:hover .todo__task-delete {
+	display: block;
+}
+
+.todo__checkbox {
+	margin-right: 18px;
+}
+
+.todo__checkbox input {
+	display: none;
+}
+
+.todo__checkbox input:checked + div{
+	background-color: var(--accent);
+}
+
+.todo__checkbox input:checked + div::after{
+	display: block;
+}
+
+.todo__checkbox div {
+	--size: 30px;
+	position: relative;
+	width: var(--size);
+	height: var(--size);
+	border: 1px solid var(--accent);
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.todo__checkbox div::after {
+	content: '';
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-image: url('../img/tick.svg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	width: 26px;
+	height: 26px;
+}
+
+.todo__task_completed .todo__task-text{
+	text-decoration: line-through;
+	color: rgba(0, 0, 0, 0.2);
+}
+
+.todo__task-text {
+	margin-right: 10px;
+	color: var(--scorpion);
+}
+
+.todo__task-delete {
+	display: none;
+	margin-left: auto;
+	background-color: transparent;
+	padding: 0;
+	cursor: pointer;
+}
+
+.todo__completed {
+	display: flex;
+	flex-direction: column;
+	row-gap: 24px;
+}
+
+.completed-todo__task {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #D8D8D8;
+}
+
+.completed-todo__date {
+	display: block;
+	margin-bottom: 15px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #D8D8D8;
+	font-weight: 700;
+}
+
+.completed-todo__body {
+	position: relative;
+	padding-left: 20px;
+}
+
+.completed-todo__body::before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 18px;
+	height: 18px;
+	background-image: url('../img/tick-round.svg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+}
+
+.completed-todo__text {
+	margin-bottom: 8px;
+}
+
+.completed-todo__text span {
+	color: var(--scorpion);
+}
+
+.completed-todo__time {
+	display: inline-block;
+	font-size: 14px;
+	color: var(--scorpion);
+}
