@@ -119,7 +119,7 @@ function changeTaskStatus(id, taskList) {
 		if (task.id === parseInt(id)) {
 			const taskContent = `
 			<li class="completed-todo__task">
-				<time class="completed-todo__date" datetime="">${date} ${month} ‧ ${day}</time>
+				<time class="completed-todo__date">${date} ${month} ‧ ${day}</time>
 				<div class="completed-todo__body">
 					<p class="completed-todo__text">
 						<strong>You</strong> completed a task: <span>${task.text}</span>
