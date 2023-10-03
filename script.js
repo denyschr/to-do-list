@@ -9,6 +9,7 @@ const dom = {
 	navBtns: document.querySelectorAll('.sidebar-todo__button'),
 	contents: document.querySelectorAll('.todo__content'),
 	completed: document.getElementById('completed'),
+	backdrop: document.getElementById('backdrop'),
 }
 
 dom.navBtns.forEach(navBtn => {
@@ -26,6 +27,7 @@ dom.navBtns.forEach(navBtn => {
 });
 
 const addedTasks = [];
+const completedTasks = [];
 
 document.addEventListener('DOMContentLoaded', () => {
 	dom.add.disabled = true;
@@ -61,16 +63,33 @@ function addTask(text, taskList) {
 		id: timestamp,
 		text,
 	}
+	showBackdrop(addedTasks);
 	taskList.push(task);
 	taskRender(addedTasks);
+}
+
+function showBackdrop(taskList) {
+	if (!taskList.length == 0) {
+		dom.backdrop.remove();
+	} else {
+		dom.tasks.innerHTML = `<div id="backdrop" class="todo__backdrop backdrop-todo">
+			<div class="backdrop-todo__img">
+				<img src="img/backdrop.jpg" width="380" alt="">
+			</div>
+			<h3 class="backdrop-todo__title">What do you need to get done today?</h3>
+			<div class="backdrop-todo__text">
+				<p>By default, tasks added here will be due today.</p>
+			</div>
+		</div>
+		`;
+	}
 }
 
 function taskRender(taskList) {
 	let htmlContent = '';
 
 	for (let task in taskList) {
-		const taskContent = `
-		<li id=${taskList[task].id} class="todo__task">
+		const taskContent = `<li id=${taskList[task].id} class="todo__task">
 			<label class="todo__checkbox">
 				<input type="checkbox">
 				<div class="todo__checkbox-div"></div>
@@ -81,7 +100,6 @@ function taskRender(taskList) {
 			</button>
 		</li>
 		`;
-
 		htmlContent += taskContent;
 	}
 	dom.tasks.innerHTML = htmlContent;
@@ -92,46 +110,66 @@ dom.tasks.addEventListener('click', e => {
 	const checkboxEl = el.classList.contains('todo__checkbox-div');
 	const btnDeleteEl = el.parentElement.classList.contains('todo__task-delete');
 	if (checkboxEl) {
+		const text = el.parentElement.nextElementSibling.textContent;
+
+		const now = new Date();
+		const timestamp = now.getTime();
+		const hours = now.getHours();
+		const minutes = now.getMinutes();
+		const date = now.getDate();
+		const day = daysOfTheWeek[now.getDay()];
+		const month = monthNames[now.getMonth()];
+
+		const completedTask = {
+			id: timestamp,
+			text,
+			hours,
+			minutes,
+			date,
+			day,
+			month,
+		}
+
+		completedTasks.unshift(completedTask);
 		const task = el.parentElement.parentElement;
 		const taskId = task.getAttribute('id');
+
 		task.remove();
-		changeTaskStatus(taskId, addedTasks);
+		changeTaskStatus(taskId, addedTasks, completedTasks);
+		showBackdrop(addedTasks);
 	}
 	if (btnDeleteEl) {
 		const task = el.parentElement.parentElement;
 		const taskId = task.getAttribute('id');
 		task.remove();
 		deleteTask(taskId, addedTasks);
+		showBackdrop(addedTasks);
 	}
 });
 
-function changeTaskStatus(id, taskList) {
+function changeTaskStatus(id, taskList, completedTaskList) {
 	let htmlContent = '';
-
-	const now = new Date();
-	const hours = now.getHours();
-	const minutes = now.getMinutes();
-	const date = now.getDate();
-	const day = daysOfTheWeek[now.getDay()];
-	const month = monthNames[now.getMonth()];
 
 	taskList.forEach((task, index) => {
 		if (task.id === parseInt(id)) {
-			const taskContent = `
-			<li class="completed-todo__task">
-				<time class="completed-todo__date">${date} ${month} ‧ ${day}</time>
-				<div class="completed-todo__body">
-					<p class="completed-todo__text">
-						<strong>You</strong> completed a task: <span>${task.text}</span>
-					</p>
-					<time class="completed-todo__time">${hours}:${minutes}</time>
-				</div>
-			</li>`;
-			htmlContent += taskContent;
 			taskList.splice(index, 1);
 		}
 	});
-	dom.completed.innerHTML += htmlContent;
+
+	completedTaskList.forEach(completedTask => {
+		const taskContent = `<li id=${completedTask.id} class="completed-todo__task">
+		<time class="completed-todo__date">${completedTask.date} ${completedTask.month} ‧ ${completedTask.day}</time>
+		<div class="completed-todo__body">
+			<p class="completed-todo__text">
+				<strong>You</strong> completed a task: <span>${completedTask.text}</span>
+			</p>
+			<time class="completed-todo__time">${completedTask.hours}:${completedTask.minutes}</time>
+		</div>
+	</li>`;
+		htmlContent += taskContent;
+	});
+
+	dom.completed.innerHTML = htmlContent;
 }
 
 function deleteTask(id, taskList) {
