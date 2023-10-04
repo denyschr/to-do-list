@@ -2,7 +2,11 @@ const monthNames = ["January", "February", "March", "April", "May", "June", "Jul
 
 const daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+const addedTasks = [];
+const completedTasks = [];
+
 const dom = {
+	notif: document.getElementById('notification'),
 	new: document.getElementById('new'),
 	add: document.getElementById('add'),
 	tasks: document.getElementById('tasks'),
@@ -26,20 +30,15 @@ dom.navBtns.forEach(navBtn => {
 	});
 });
 
-const addedTasks = [];
-const completedTasks = [];
-
 document.addEventListener('DOMContentLoaded', () => {
 	dom.add.disabled = true;
 	dom.add.style.opacity = 0.8;
 	dom.add.style.cursor = 'not-allowed';
-	dom.new.addEventListener('input', () => {
-		setInterval(stateHandle, 100);
-	});
+	dom.new.addEventListener('input', stateHandle);
 });
 
 function stateHandle() {
-	if (dom.new.value === '') {
+	if (dom.new.value === null) {
 		dom.add.disabled = true;
 		dom.add.style.opacity = 0.8;
 		dom.add.style.cursor = 'not-allowed';
@@ -52,9 +51,12 @@ function stateHandle() {
 
 dom.add.addEventListener('click', () => {
 	const task = dom.new.value;
-	dom.new.value = '';
+	dom.new.value = null;
 	addTask(task, addedTasks);
 	dom.new.focus();
+	dom.add.disabled = true;
+	dom.add.style.opacity = 0.8;
+	dom.add.style.cursor = 'not-allowed';
 });
 
 function addTask(text, taskList) {
@@ -66,6 +68,7 @@ function addTask(text, taskList) {
 	showBackdrop(addedTasks);
 	taskList.push(task);
 	taskRender(addedTasks);
+	notif(mssg = 'Task added successfully');
 }
 
 function showBackdrop(taskList) {
@@ -105,6 +108,17 @@ function taskRender(taskList) {
 	dom.tasks.innerHTML = htmlContent;
 }
 
+function notif(text) {
+	dom.notif.innerHTML = `<div class="notification__content">
+		<span class="notification__caption">${text}!</span>
+		<button class="notification__close"></button>
+	</div>`;
+	const notifClose = document.querySelector('.notification__close');
+	notifClose.addEventListener('click', e => {
+		e.target.parentElement.remove();
+	});
+}
+
 dom.tasks.addEventListener('click', e => {
 	const el = e.target;
 	const checkboxEl = el.classList.contains('todo__checkbox-div');
@@ -136,6 +150,7 @@ dom.tasks.addEventListener('click', e => {
 
 		task.remove();
 		changeTaskStatus(taskId, addedTasks, completedTasks);
+		notif(mssg = 'Task completed');
 		showBackdrop(addedTasks);
 	}
 	if (btnDeleteEl) {
@@ -143,6 +158,7 @@ dom.tasks.addEventListener('click', e => {
 		const taskId = task.getAttribute('id');
 		task.remove();
 		deleteTask(taskId, addedTasks);
+		notif(mssg = 'Task deleted');
 		showBackdrop(addedTasks);
 	}
 });

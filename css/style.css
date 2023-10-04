@@ -21,6 +21,7 @@ body {
 .wrapper{
 	max-width: 1200px;
 	width: 100%;
+	padding: 0 15px;
 }
 
 .todo {
@@ -305,4 +306,71 @@ body {
 	display: inline-block;
 	font-size: 14px;
 	color: var(--scorpion);
+}
+
+.notification__content {
+	position: absolute;
+	left: 20px;
+	bottom: 20px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 300px;
+	width: 100%;
+	padding: 20px;
+	border-radius: 15px;
+	background-color: #414040;
+	box-shadow: 2px 2px 2px 2px #5f5e5e;
+	animation: .4s linear move-up;
+	animation-iteration-count: 1;
+}
+
+.notification__caption {
+	margin-right: 15px;
+	color: #fff;
+}
+
+.notification__close {
+	position: relative;
+	width: 30px;
+	height: 30px;
+	padding: 5px;
+	color: #fff;
+	cursor: pointer;
+	border-radius: 6px;
+	background-color: transparent;
+	transition: background .2s ease-in-out;
+}
+
+.notification__close:hover {
+	background-color: #d8d8d844;
+}
+
+.notification__close::before,
+.notification__close::after {
+	content: '';
+	position: absolute;
+	left: 1px;
+	display: block;
+	width: 90%;
+	height: 1px;
+	background-color: currentColor;
+}
+
+.notification__close::before {
+	transform: rotate(-45deg);
+}
+
+.notification__close::after {
+	transform: rotate(45deg);
+}
+
+@keyframes move-up {
+	from {
+		bottom: -50px;
+		opacity: 0;
+	} to {
+		bottom: 20px;
+		opacity: 1;
+	}
 }
