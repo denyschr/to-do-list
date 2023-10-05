@@ -1,12 +1,12 @@
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
 const daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-const addedTasks = [];
+const addedTasks = []
 const completedTasks = [];
 
+const runtimeSound = new Audio('sources/completed-task.mp3');
+
 const dom = {
-	notif: document.getElementById('notification'),
 	new: document.getElementById('new'),
 	add: document.getElementById('add'),
 	tasks: document.getElementById('tasks'),
@@ -14,6 +14,7 @@ const dom = {
 	contents: document.querySelectorAll('.todo__content'),
 	completed: document.getElementById('completed'),
 	backdrop: document.getElementById('backdrop'),
+	notif: document.getElementById('notification'),
 }
 
 dom.navBtns.forEach(navBtn => {
@@ -37,8 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	dom.new.addEventListener('input', stateHandle);
 });
 
-function stateHandle() {
-	if (dom.new.value === null) {
+function stateHandle(e) {
+	if (e.target.value === '') {
 		dom.add.disabled = true;
 		dom.add.style.opacity = 0.8;
 		dom.add.style.cursor = 'not-allowed';
@@ -68,7 +69,7 @@ function addTask(text, taskList) {
 	showBackdrop(addedTasks);
 	taskList.push(task);
 	taskRender(addedTasks);
-	notif(mssg = 'Task added successfully');
+	notif(mssg = 'Task added');
 }
 
 function showBackdrop(taskList) {
@@ -79,9 +80,9 @@ function showBackdrop(taskList) {
 			<div class="backdrop-todo__img">
 				<img src="img/backdrop.jpg" width="380" alt="">
 			</div>
-			<h3 class="backdrop-todo__title">What do you need to get done today?</h3>
+			<h3 class="backdrop-todo__title">Your peace of mind is priceless</h3>
 			<div class="backdrop-todo__text">
-				<p>By default, tasks added here will be due today.</p>
+				<p>Well done! All your team's tasks are organized in the right place.</p>
 			</div>
 		</div>
 		`;
@@ -111,7 +112,7 @@ function taskRender(taskList) {
 function notif(text) {
 	dom.notif.innerHTML = `<div class="notification__content">
 		<span class="notification__caption">${text}!</span>
-		<button class="notification__close"></button>
+		<button class="notification__close" title="Close"></button>
 	</div>`;
 	const notifClose = document.querySelector('.notification__close');
 	notifClose.addEventListener('click', e => {
@@ -147,11 +148,13 @@ dom.tasks.addEventListener('click', e => {
 		completedTasks.unshift(completedTask);
 		const task = el.parentElement.parentElement;
 		const taskId = task.getAttribute('id');
-
-		task.remove();
-		changeTaskStatus(taskId, addedTasks, completedTasks);
+		setTimeout(() => {
+			task.remove();
+			changeTaskStatus(taskId, addedTasks, completedTasks);
+			showBackdrop(addedTasks);
+		}, 300);
+		runtimeSound.play();
 		notif(mssg = 'Task completed');
-		showBackdrop(addedTasks);
 	}
 	if (btnDeleteEl) {
 		const task = el.parentElement.parentElement;
@@ -184,7 +187,6 @@ function changeTaskStatus(id, taskList, completedTaskList) {
 	</li>`;
 		htmlContent += taskContent;
 	});
-
 	dom.completed.innerHTML = htmlContent;
 }
 
