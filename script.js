@@ -34,7 +34,7 @@ dom.navBtns.forEach(navBtn => {
 document.addEventListener('DOMContentLoaded', () => {
 	dom.add.disabled = true;
 	dom.add.style.opacity = 0.8;
-	dom.add.style.cursor = 'not-allowed';
+	dom.add.style.pointerEvents = 'none';
 	dom.new.addEventListener('input', stateHandle);
 });
 
@@ -42,11 +42,11 @@ function stateHandle(e) {
 	if (e.target.value === '') {
 		dom.add.disabled = true;
 		dom.add.style.opacity = 0.8;
-		dom.add.style.cursor = 'not-allowed';
+		dom.add.style.pointerEvents = 'none';
 	} else {
 		dom.add.disabled = false;
 		dom.add.style.opacity = 1;
-		dom.add.style.cursor = 'pointer';
+		dom.add.style.pointerEvents = 'all';
 	}
 }
 
@@ -57,7 +57,7 @@ dom.add.addEventListener('click', () => {
 	dom.new.focus();
 	dom.add.disabled = true;
 	dom.add.style.opacity = 0.8;
-	dom.add.style.cursor = 'not-allowed';
+	dom.add.style.pointerEvents = 'none';
 });
 
 function addTask(text, taskList) {
@@ -99,9 +99,14 @@ function taskRender(taskList) {
 				<div class="todo__checkbox-div"></div>
 			</label>
 			<p class="todo__task-text">${taskList[task].text}</p>
-			<button class="todo__task-delete" title="Delete task">
-				<img src="img/trash.svg" alt="Trash">
-			</button>
+			<div class="todo__task-actions">
+				<button class="todo__task-edit" title="Edit task">
+					<img src="img/edit.svg" alt="Edit">
+				</button>
+				<button class="todo__task-delete" title="Delete task">
+					<img src="img/trash.svg" alt="Trash">
+				</button>
+			</div>
 		</li>
 		`;
 		htmlContent += taskContent;
@@ -124,6 +129,8 @@ dom.tasks.addEventListener('click', e => {
 	const el = e.target;
 	const checkboxEl = el.classList.contains('todo__checkbox-div');
 	const btnDeleteEl = el.parentElement.classList.contains('todo__task-delete');
+	const btnEditEl = el.parentElement.classList.contains('todo__task-edit');
+
 	if (checkboxEl) {
 		const text = el.parentElement.nextElementSibling.textContent;
 
@@ -148,21 +155,31 @@ dom.tasks.addEventListener('click', e => {
 		completedTasks.unshift(completedTask);
 		const task = el.parentElement.parentElement;
 		const taskId = task.getAttribute('id');
+		runtimeSound.play();
 		setTimeout(() => {
 			task.remove();
 			changeTaskStatus(taskId, addedTasks, completedTasks);
 			showBackdrop(addedTasks);
 		}, 300);
-		runtimeSound.play();
 		notif(mssg = 'Task completed');
 	}
+
 	if (btnDeleteEl) {
-		const task = el.parentElement.parentElement;
+		const task = el.parentElement.parentElement.parentElement;
 		const taskId = task.getAttribute('id');
 		task.remove();
 		deleteTask(taskId, addedTasks);
 		notif(mssg = 'Task deleted');
 		showBackdrop(addedTasks);
+	}
+
+	if (btnEditEl) {
+		const task = el.parentElement.parentElement.parentElement;
+		const taskId = task.getAttribute('id');
+		const taskText = task.querySelector('.todo__task-text');
+		const taskCheckbox = task.querySelector('.todo__checkbox');
+		const taskActions = task.querySelector('.todo__task-actions');
+		editTask(task, taskId, taskText, taskCheckbox, taskActions, addedTasks);
 	}
 });
 
@@ -188,6 +205,51 @@ function changeTaskStatus(id, taskList, completedTaskList) {
 		htmlContent += taskContent;
 	});
 	dom.completed.innerHTML = htmlContent;
+}
+
+function editTask(task, id, text, checkbox, actions, taskList) {
+	task.classList.add('todo__task--editing');
+	actions.classList.add('todo__task-actions--editing');
+	checkbox.remove();
+	text.style.paddingBottom = '10px';
+	actions.innerHTML = `
+		<button class="todo__task-cancel" title="Cancel">Cancel</button>
+		<button class="todo__task-save" title="Save">Save</button>
+	`;
+
+	const taskCancel = actions.querySelector('.todo__task-cancel');
+	const taskSave = actions.querySelector('.todo__task-save');
+	const input = document.createElement('input');
+	input.setAttribute('type', 'text');
+	input.classList.add('todo__task-input');
+	input.value = text.innerHTML;
+	text.replaceWith(input);
+	input.focus();
+
+	input.addEventListener('input', e => {
+		if (e.target.value === '') {
+			taskSave.disabled = true;
+			taskSave.style.opacity = 0.8;
+			taskSave.style.pointerEvents = 'none';
+		} else {
+			taskSave.disabled = false;
+			taskSave.style.opacity = 1;
+			taskSave.style.pointerEvents = 'all';
+		}
+	});
+
+	taskCancel.addEventListener('click', () => {
+		taskRender(addedTasks);
+	});
+
+	taskSave.addEventListener('click', () => {
+		taskList.forEach(task => {
+			if (task.id === parseInt(id)) {
+				task.text = input.value;
+			}
+		});
+		taskRender(addedTasks);
+	});
 }
 
 function deleteTask(id, taskList) {
