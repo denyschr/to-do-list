@@ -11,40 +11,50 @@
 <body>
 	<div class="wrapper">
 		<div class="todo">
-			<aside class="todo__sidebar sidebar-todo">
-				<nav class="sidebar-todo__nav">
-					<ul class="sidebar-todo__list">
-						<li class="sidebar-todo__item"><button
-								class="sidebar-todo__button sidebar-todo__button_inbox sidebar-todo__button--active"
-								data-target="inbox">Inbox</button></li>
-						<li class="sidebar-todo__item"><button class="sidebar-todo__button sidebar-todo__button_completed"
-								data-target="completed-tasks">Completed</button></li>
-					</ul>
-				</nav>
-			</aside>
-			<div class="todo__content todo__content--active" id="inbox">
-				<h2 class="todo__title">Inbox</h2>
-				<form action="#" class="todo__form form-todo">
-					<input id="new" type="text" class="form-todo__input" placeholder="Add new task">
-					<button id="add" class="form-todo__add" title="Add task">+</button>
-				</form>
-				<ul id="tasks" class="todo__tasks">
-					<div id="backdrop" class="todo__backdrop backdrop-todo">
-						<div class="backdrop-todo__img">
-							<img src="img/backdrop.jpg" width="380" alt="">
-						</div>
-						<h3 class="backdrop-todo__title">Your peace of mind is priceless</h3>
-						<div class="backdrop-todo__text">
-							<p>Well done! All your team's tasks are organized in the right place.</p>
-						</div>
-					</div>
-				</ul>
+			<div class="todo__header header-todo">
+				<button id="burger" class="header-todo__button" title="Open/close sidebar">
+					<span></span>
+				</button>
+				<div class="header-todo__img">
+					<img src="img/todoist-logo.png" width="32" height="32" alt="Logo">
+				</div>
 			</div>
-			<div class="todo__content" id="completed-tasks">
-				<h2 class="todo__title">Completed tasks</h2>
-				<ul id="completed" class="todo__completed completed-todo">
-					<div class="completed-todo__caption">No completed tasks yet.</div>
-				</ul>
+			<div class="todo__body">
+				<aside id="sidebar" class="todo__sidebar sidebar-todo todo__sidebar--open">
+					<nav class="sidebar-todo__nav">
+						<ul class="sidebar-todo__list">
+							<li class="sidebar-todo__item"><button
+									class="sidebar-todo__button sidebar-todo__button_inbox sidebar-todo__button--active"
+									data-target="inbox">Inbox</button></li>
+							<li class="sidebar-todo__item"><button class="sidebar-todo__button sidebar-todo__button_completed"
+									data-target="completed-tasks">Completed</button></li>
+						</ul>
+					</nav>
+				</aside>
+				<div class="todo__content todo__content--active" id="inbox">
+					<h2 class="todo__title">Inbox</h2>
+					<form action="#" class="todo__form form-todo">
+						<input id="new" type="text" class="form-todo__input" placeholder="Add new task">
+						<button id="add" class="form-todo__add" title="Add task">+</button>
+					</form>
+					<ul id="tasks" class="todo__tasks">
+						<div id="backdrop" class="todo__backdrop backdrop-todo">
+							<div class="backdrop-todo__img">
+								<img src="img/backdrop.jpg" width="380" alt="">
+							</div>
+							<h3 class="backdrop-todo__title">Your peace of mind is priceless</h3>
+							<div class="backdrop-todo__text">
+								<p>Well done! All your team's tasks are organized in the right place.</p>
+							</div>
+						</div>
+					</ul>
+				</div>
+				<div class="todo__content" id="completed-tasks">
+					<h2 class="todo__title">Completed tasks</h2>
+					<ul id="completed" class="todo__completed completed-todo">
+						<div class="completed-todo__caption">No completed tasks yet.</div>
+					</ul>
+				</div>
 			</div>
 			<div id="notification" class="notification"></div>
 		</div>

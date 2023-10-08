@@ -7,6 +7,7 @@
 	--priamry: #F3F3F3;
 	--scorpion: #5A5A5A;
 	--alto: #D8D8D8;
+	--alabaster: #F7F7F7;
 }
 
 body {
@@ -26,33 +27,85 @@ body {
 
 .todo {
 	position: relative;
-	display: flex;
-	column-gap: 53px;
-	min-height: 600px;
 	border-radius: 8px;
 	background: #FFF;
 	box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.25);
 }
 
-.todo::before {
+.todo__header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 50px;
+	margin-bottom: 2px;
+	padding: 5px 20px;
+	border-radius: 8px 8px 0 0;
+	background-color: var(--alabaster);
+}
+
+.header-todo__button {
+	position: relative;
+	width: 34px;
+	height: 30px;
+	padding: 8px;
+	border-radius: 4px;
+	background-color: transparent;
+	cursor: pointer;
+	transition: background .2s ease-in-out;
+}
+
+.header-todo__button:hover {
+	background-color: #e8e7e7;
+}
+
+.header-todo__button::before, .header-todo__button::after{
 	content: '';
 	position: absolute;
-	left: 10px;
-	top: 10px;
-	width: 36px;
-	height: 36px;
-	border-radius: 4px;
-	background-image: url('../img/todoist-logo.png');
-	background-repeat: no-repeat;
-	background-size: cover;
-	background-position: center;
+	left: 8px;
+	width: 55%;
+	height: 1px;
+	background-color: var(--scorpion);
+}
+
+.header-todo__button::before {
+	top: 8px;
+}
+
+.header-todo__button::after {
+	top: calc(100% - 9px);
+}
+
+.header-todo__button span {
+	position: absolute;
+	left: 8px;
+	top: 51%;
+	transform: translateY(-50%);
+	width: 55%;
+	height: 1.8px;
+	background-color: var(--scorpion);
+}
+
+.todo__body {
+	display: flex;
+	min-height: 600px;
+	column-gap: 53px;
 }
 
 .todo__sidebar {
-	min-width: 350px;
-	padding: 100px 50px 50px 20px;
-	background-color: #f2f0f069;
-	border-radius: 8px 0 0 8px;
+	max-width: 0;
+	width: 100%;
+	opacity: 0;
+	visibility: hidden;
+	padding: 35px 50px 50px 20px;
+	background-color: var(--alabaster);
+	border-radius: 0 0 0 8px;
+	transition: opacity .3s ease-in-out, max-width .3s ease-in-out, visibility.3s ease-in-out;
+}
+
+.todo__sidebar--open {
+	max-width: 350px;
+	opacity: 1;
+	visibility: visible;
 }
 
 .sidebar-todo__list {
@@ -97,12 +150,11 @@ body {
 }
 
 .sidebar-todo__button:hover {
-	background-color: var(--priamry);
+	background-color: #e8e7e7;
 }
 
 .sidebar-todo__button--active {
-	background-color: var(--priamry);
-	color: var(--accent);
+	background-color: #e8e7e7;
 	pointer-events: none;
 }
 

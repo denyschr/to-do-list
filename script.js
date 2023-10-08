@@ -7,6 +7,8 @@ const completedTasks = [];
 const runtimeSound = new Audio('sources/completed-task.mp3');
 
 const dom = {
+	burger: document.getElementById('burger'),
+	sidebar: document.getElementById('sidebar'),
 	new: document.getElementById('new'),
 	add: document.getElementById('add'),
 	tasks: document.getElementById('tasks'),
@@ -16,6 +18,10 @@ const dom = {
 	backdrop: document.getElementById('backdrop'),
 	notif: document.getElementById('notification'),
 }
+
+dom.burger.addEventListener('click', () => {
+	dom.sidebar.classList.toggle('todo__sidebar--open');
+});
 
 dom.navBtns.forEach(navBtn => {
 	navBtn.addEventListener('click', e => {
