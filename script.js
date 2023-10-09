@@ -20,6 +20,11 @@ const dom = {
 	navBtns: document.querySelectorAll('.sidebar-todo__button'),
 	contents: document.querySelectorAll('.todo__content'),
 	completed: document.getElementById('completed'),
+	modalDel: document.querySelector('.modal-del'),
+	modalDelClose: document.querySelector('.modal-del__close'),
+	modalDelText: document.querySelector('.modal-del__text span'),
+	modalDelCancel: document.querySelector('.modal-del__cancel'),
+	modalDelRemove: document.querySelector('.modal-del__remove'),
 	backdrop: document.getElementById('backdrop'),
 	notif: document.getElementById('notification'),
 }
@@ -148,7 +153,7 @@ function taskRender(taskList) {
 function notif(text) {
 	dom.notif.innerHTML = `<div class="notification__content">
 		<span class="notification__caption">${text}!</span>
-		<button class="notification__close" title="Close"></button>
+		<button class="notification__close btn-close" title="Close"></button>
 	</div>`;
 	const notifClose = document.querySelector('.notification__close');
 	notifClose.addEventListener('click', e => {
@@ -203,10 +208,8 @@ dom.tasks.addEventListener('click', e => {
 	if (btnDeleteEl) {
 		const task = el.parentElement.parentElement.parentElement;
 		const taskId = task.getAttribute('id');
-		task.remove();
-		deleteTask(taskId, addedTasks);
-		notif(mssg = 'Task deleted');
-		showBackdrop(addedTasks);
+		const taskText = task.querySelector('.todo__task-text').innerHTML;
+		deleteTask(task, taskId, taskText, addedTasks);
 	}
 
 	if (btnEditEl) {
@@ -252,8 +255,8 @@ function editTask(task, id, text, checkbox, actions) {
 	checkbox.remove();
 	text.style.paddingBottom = '10px';
 	actions.innerHTML = `
-		<button class="todo__task-cancel" title="Cancel">Cancel</button>
-		<button class="todo__task-save" title="Save">Save</button>
+		<button class="todo__task-cancel btn-cancel" title="Cancel">Cancel</button>
+		<button class="todo__task-save btn-save" title="Save">Save</button>
 	`;
 
 	const btnCancel = actions.querySelector('.todo__task-cancel');
@@ -273,8 +276,6 @@ function editTask(task, id, text, checkbox, actions) {
 	input.addEventListener('keyup', e => {
 		if (e.key == 'Enter' && !e.target.value == '') {
 			taskSave(addedTasks, taskId, input);
-		} else {
-
 		}
 	});
 
@@ -310,11 +311,25 @@ function taskCancel() {
 	taskRender(addedTasks);
 }
 
-function deleteTask(id, taskList) {
-	taskList.forEach((task, index) => {
-		if (task.id === parseInt(id)) {
-			taskList.splice(index, 1);
-		}
+function modalClose() {
+	dom.modalDel.classList.remove('modal-del--open');
+}
+
+function deleteTask(task, id, taskText, taskList) {
+	dom.modalDel.classList.add('modal-del--open');
+	dom.modalDelText.innerHTML = taskText;
+	dom.modalDelClose.addEventListener('click', modalClose);
+	dom.modalDelCancel.addEventListener('click', modalClose);
+	dom.modalDelRemove.addEventListener('click', () => {
+		task.remove();
+		taskList.forEach((task, index) => {
+			if (task.id === parseInt(id)) {
+				taskList.splice(index, 1);
+			}
+		});
+		modalClose();
+		checkCounter();
+		notif(mssg = 'Task deleted');
+		showBackdrop(addedTasks);
 	});
-	checkCounter();
 }
