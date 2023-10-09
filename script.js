@@ -3,12 +3,17 @@ const daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "
 
 const addedTasks = []
 const completedTasks = [];
+let contentHeight;
 
 const runtimeSound = new Audio('sources/completed-task.mp3');
 
 const dom = {
 	burger: document.getElementById('burger'),
 	sidebar: document.getElementById('sidebar'),
+	inbox: document.getElementById('inbox'),
+	completedTasks: document.getElementById('completed-tasks'),
+	inboxCounter: document.getElementById('inbox-counter'),
+	completedCounter: document.getElementById('completed-counter'),
 	new: document.getElementById('new'),
 	add: document.getElementById('add'),
 	tasks: document.getElementById('tasks'),
@@ -34,10 +39,20 @@ dom.navBtns.forEach(navBtn => {
 			content.classList.remove('todo__content--active');
 		});
 		document.getElementById(`${path}`).classList.add('todo__content--active');
+		if (dom.completedTasks.scrollHeight > contentHeight) {
+			dom.completedTasks.style.overflowY = 'scroll';
+		}
 	});
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+	dom.inbox.classList.remove('todo__content--active');
+	dom.completedTasks.classList.add('todo__content--active');
+	contentHeight = dom.completedTasks.offsetHeight;
+	dom.completedTasks.style.maxHeight = `${contentHeight}px`;
+	dom.completedTasks.classList.remove('todo__content--active');
+	dom.inbox.classList.add('todo__content--active');
+
 	dom.add.disabled = true;
 	dom.add.style.opacity = 0.8;
 	dom.add.style.pointerEvents = 'none';
@@ -56,9 +71,18 @@ function stateHandle(e) {
 	}
 }
 
+function checkCounter() {
+	if (addedTasks.length == 0) {
+		dom.inboxCounter.innerHTML = '';
+	} else {
+		dom.inboxCounter.innerHTML = `${addedTasks.length}`;
+	}
+}
+
 dom.add.addEventListener('click', () => {
 	const task = dom.new.value;
-	dom.new.value = null;
+	task.lastIndexOf(" ");
+	dom.new.value = '';
 	addTask(task, addedTasks);
 	dom.new.focus();
 	dom.add.disabled = true;
@@ -75,6 +99,7 @@ function addTask(text, taskList) {
 	showBackdrop(addedTasks);
 	taskList.push(task);
 	taskRender(addedTasks);
+	dom.inboxCounter.innerHTML = `${addedTasks.length}`;
 	notif(mssg = 'Task added');
 }
 
@@ -143,10 +168,14 @@ dom.tasks.addEventListener('click', e => {
 		const now = new Date();
 		const timestamp = now.getTime();
 		const hours = now.getHours();
-		const minutes = now.getMinutes();
+		let minutes = now.getMinutes();
 		const date = now.getDate();
 		const day = daysOfTheWeek[now.getDay()];
 		const month = monthNames[now.getMonth()];
+
+		if (minutes < 10) {
+			minutes = `0${minutes}`
+		}
 
 		const completedTask = {
 			id: timestamp,
@@ -167,6 +196,7 @@ dom.tasks.addEventListener('click', e => {
 			changeTaskStatus(taskId, addedTasks, completedTasks);
 			showBackdrop(addedTasks);
 		}, 300);
+		dom.completedCounter.innerHTML = `${completedTasks.length}`;
 		notif(mssg = 'Task completed');
 	}
 
@@ -185,7 +215,7 @@ dom.tasks.addEventListener('click', e => {
 		const taskText = task.querySelector('.todo__task-text');
 		const taskCheckbox = task.querySelector('.todo__checkbox');
 		const taskActions = task.querySelector('.todo__task-actions');
-		editTask(task, taskId, taskText, taskCheckbox, taskActions, addedTasks);
+		editTask(task, taskId, taskText, taskCheckbox, taskActions);
 	}
 });
 
@@ -197,6 +227,8 @@ function changeTaskStatus(id, taskList, completedTaskList) {
 			taskList.splice(index, 1);
 		}
 	});
+
+	checkCounter();
 
 	completedTaskList.forEach(completedTask => {
 		const taskContent = `<li id=${completedTask.id} class="completed-todo__task">
@@ -213,7 +245,8 @@ function changeTaskStatus(id, taskList, completedTaskList) {
 	dom.completed.innerHTML = htmlContent;
 }
 
-function editTask(task, id, text, checkbox, actions, taskList) {
+function editTask(task, id, text, checkbox, actions) {
+	const taskId = id;
 	task.classList.add('todo__task--editing');
 	actions.classList.add('todo__task-actions--editing');
 	checkbox.remove();
@@ -223,8 +256,8 @@ function editTask(task, id, text, checkbox, actions, taskList) {
 		<button class="todo__task-save" title="Save">Save</button>
 	`;
 
-	const taskCancel = actions.querySelector('.todo__task-cancel');
-	const taskSave = actions.querySelector('.todo__task-save');
+	const btnCancel = actions.querySelector('.todo__task-cancel');
+	const btnSave = actions.querySelector('.todo__task-save');
 	const input = document.createElement('input');
 	input.setAttribute('type', 'text');
 	input.classList.add('todo__task-input');
@@ -233,29 +266,48 @@ function editTask(task, id, text, checkbox, actions, taskList) {
 	input.focus();
 
 	input.addEventListener('input', e => {
-		if (e.target.value === '') {
-			taskSave.disabled = true;
-			taskSave.style.opacity = 0.8;
-			taskSave.style.pointerEvents = 'none';
+		const targetValue = e.target.value;
+		btnStatus(targetValue, btnSave);
+	});
+
+	input.addEventListener('keyup', e => {
+		if (e.key == 'Enter' && !e.target.value == '') {
+			taskSave(addedTasks, taskId, input);
 		} else {
-			taskSave.disabled = false;
-			taskSave.style.opacity = 1;
-			taskSave.style.pointerEvents = 'all';
+
 		}
 	});
 
-	taskCancel.addEventListener('click', () => {
-		taskRender(addedTasks);
-	});
+	btnCancel.addEventListener('click', taskCancel);
 
-	taskSave.addEventListener('click', () => {
-		taskList.forEach(task => {
-			if (task.id === parseInt(id)) {
-				task.text = input.value;
-			}
-		});
-		taskRender(addedTasks);
+	btnSave.addEventListener('click', () => {
+		taskSave(addedTasks, taskId, input);
 	});
+}
+
+function btnStatus(value, btnSave) {
+	if (value === '') {
+		btnSave.disabled = true;
+		btnSave.style.opacity = 0.8;
+		btnSave.style.pointerEvents = 'none';
+	} else {
+		btnSave.disabled = false;
+		btnSave.style.opacity = 1;
+		btnSave.style.pointerEvents = 'all';
+	}
+}
+
+function taskSave(taskList, id, input) {
+	taskList.forEach(task => {
+		if (task.id === parseInt(id)) {
+			task.text = input.value;
+		}
+	});
+	taskRender(addedTasks);
+}
+
+function taskCancel() {
+	taskRender(addedTasks);
 }
 
 function deleteTask(id, taskList) {
@@ -264,4 +316,5 @@ function deleteTask(id, taskList) {
 			taskList.splice(index, 1);
 		}
 	});
+	checkCounter();
 }

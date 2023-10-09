@@ -63,7 +63,7 @@ body {
 	position: absolute;
 	left: 8px;
 	width: 55%;
-	height: 1px;
+	height: 2px;
 	background-color: var(--scorpion);
 }
 
@@ -117,8 +117,10 @@ body {
 .sidebar-todo__button {
 	position: relative;
 	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	padding: 10px 15px 10px 38px;
-	text-align: left;
 	border-radius: 8px;
 	background-color: transparent;
 	color: #000;
@@ -158,6 +160,12 @@ body {
 	pointer-events: none;
 }
 
+.sidebar-todo__counter {
+	margin-left: 8px;
+	font-size: 14px;
+	color: var(--scorpion);
+}
+
 .todo__content {
 	display: none;
 	padding: 30px 43px 30px 0;
@@ -165,7 +173,8 @@ body {
 }
 
 .todo__content--active {
-	display: block;
+	display: flex;
+	flex-direction: column;
 }
 
 .todo__title {
@@ -380,6 +389,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	row-gap: 24px;
+	flex-grow: 1;
 }
 
 .completed-todo__task {
