@@ -3,7 +3,8 @@ const daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "
 
 const addedTasks = []
 const completedTasks = [];
-let contentHeight;
+let completedContentHeight;
+let inboxContentHegiht;
 
 const runtimeSound = new Audio('sources/completed-task.mp3');
 
@@ -44,7 +45,7 @@ dom.navBtns.forEach(navBtn => {
 			content.classList.remove('todo__content--active');
 		});
 		document.getElementById(`${path}`).classList.add('todo__content--active');
-		if (dom.completedTasks.scrollHeight > contentHeight) {
+		if (dom.completedTasks.scrollHeight > completedContentHeight) {
 			dom.completedTasks.style.overflowY = 'scroll';
 		}
 	});
@@ -53,10 +54,12 @@ dom.navBtns.forEach(navBtn => {
 document.addEventListener('DOMContentLoaded', () => {
 	dom.inbox.classList.remove('todo__content--active');
 	dom.completedTasks.classList.add('todo__content--active');
-	contentHeight = dom.completedTasks.offsetHeight;
-	dom.completedTasks.style.maxHeight = `${contentHeight}px`;
+	completedContentHeight = dom.completedTasks.offsetHeight;
+	dom.completedTasks.style.maxHeight = `${completedContentHeight}px`;
 	dom.completedTasks.classList.remove('todo__content--active');
 	dom.inbox.classList.add('todo__content--active');
+	inboxContentHegiht = dom.inbox.offsetHeight;
+	dom.inbox.style.maxHeight = `${inboxContentHegiht}px`;
 
 	dom.add.disabled = true;
 	dom.add.style.opacity = 0.8;
@@ -93,6 +96,9 @@ dom.add.addEventListener('click', () => {
 	dom.add.disabled = true;
 	dom.add.style.opacity = 0.8;
 	dom.add.style.pointerEvents = 'none';
+	if (dom.inbox.scrollHeight > inboxContentHegiht) {
+		dom.inbox.style.overflowY = 'scroll';
+	}
 });
 
 function addTask(text, taskList) {
@@ -129,7 +135,7 @@ function taskRender(taskList) {
 	let htmlContent = '';
 
 	for (let task in taskList) {
-		const taskContent = `<li id=${taskList[task].id} class="todo__task">
+		const taskContent = `<div id=${taskList[task].id} class="todo__task">
 			<label class="todo__checkbox">
 				<input type="checkbox">
 				<div class="todo__checkbox-div"></div>
@@ -143,7 +149,7 @@ function taskRender(taskList) {
 					<img src="img/trash.svg" alt="Trash">
 				</button>
 			</div>
-		</li>
+		</div>
 		`;
 		htmlContent += taskContent;
 	}
