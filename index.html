@@ -16,7 +16,7 @@
 					<span></span>
 				</button>
 				<div class="header-todo__img">
-					<img src="img/todoist-logo.png" width="32" height="32" alt="Logo">
+					<img src="img/todoist-logo.png" width="26" height="26" alt="Logo">
 				</div>
 			</div>
 			<div class="todo__body">
@@ -41,19 +41,20 @@
 				</aside>
 				<div class="todo__content todo__content--active" id="inbox">
 					<h2 class="todo__title">Inbox</h2>
-					<form action="#" class="todo__form form-todo">
-						<input id="new" type="text" class="form-todo__input" placeholder="Add new task">
-						<button id="add" class="form-todo__add" title="Add task">+</button>
-					</form>
-					<div id="tasks" class="todo__tasks">
-						<div id="backdrop" class="todo__backdrop backdrop-todo">
-							<div class="backdrop-todo__img">
-								<img src="img/backdrop.jpg" width="380" alt="">
-							</div>
-							<h3 class="backdrop-todo__title">Your peace of mind is priceless</h3>
-							<div class="backdrop-todo__text">
-								<p>Well done! All your team's tasks are organized in the right place.</p>
-							</div>
+					<div id="tasks" class="todo__tasks"></div>
+					<div class="todo__add add-todo">
+						<button id="add" class="add-todo__btn">
+							<span class="add-todo__plus"></span>
+							<span class="add-todo__text">Add task</span>
+						</button>
+					</div>
+					<div id="backdrop" class="todo__backdrop backdrop-todo">
+						<div class="backdrop-todo__img">
+							<img src="img/backdrop.jpg" width="380" alt="">
+						</div>
+						<h3 class="backdrop-todo__title">Your peace of mind is priceless</h3>
+						<div class="backdrop-todo__text">
+							<p>Well done! All your team's tasks are organized in the right place.</p>
 						</div>
 					</div>
 				</div>

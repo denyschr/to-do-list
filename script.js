@@ -15,7 +15,6 @@ const dom = {
 	completedTasks: document.getElementById('completed-tasks'),
 	inboxCounter: document.getElementById('inbox-counter'),
 	completedCounter: document.getElementById('completed-counter'),
-	new: document.getElementById('new'),
 	add: document.getElementById('add'),
 	tasks: document.getElementById('tasks'),
 	navBtns: document.querySelectorAll('.sidebar-todo__button'),
@@ -27,7 +26,7 @@ const dom = {
 	modalDelCancel: document.querySelector('.modal-del__cancel'),
 	modalDelRemove: document.querySelector('.modal-del__remove'),
 	backdrop: document.getElementById('backdrop'),
-	notif: document.getElementById('notification'),
+	notify: document.getElementById('notification'),
 }
 
 dom.burger.addEventListener('click', () => {
@@ -60,24 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	dom.inbox.classList.add('todo__content--active');
 	inboxContentHegiht = dom.inbox.offsetHeight;
 	dom.inbox.style.maxHeight = `${inboxContentHegiht}px`;
-
-	dom.add.disabled = true;
-	dom.add.style.opacity = 0.8;
-	dom.add.style.pointerEvents = 'none';
-	dom.new.addEventListener('input', stateHandle);
 });
-
-function stateHandle(e) {
-	if (e.target.value === '') {
-		dom.add.disabled = true;
-		dom.add.style.opacity = 0.8;
-		dom.add.style.pointerEvents = 'none';
-	} else {
-		dom.add.disabled = false;
-		dom.add.style.opacity = 1;
-		dom.add.style.pointerEvents = 'all';
-	}
-}
 
 function checkCounter() {
 	if (addedTasks.length == 0) {
@@ -87,48 +69,95 @@ function checkCounter() {
 	}
 }
 
-dom.add.addEventListener('click', () => {
-	const task = dom.new.value;
-	task.lastIndexOf(" ");
-	dom.new.value = '';
-	addTask(task, addedTasks);
-	dom.new.focus();
-	dom.add.disabled = true;
-	dom.add.style.opacity = 0.8;
-	dom.add.style.pointerEvents = 'none';
-	if (dom.inbox.scrollHeight > inboxContentHegiht) {
-		dom.inbox.style.overflowY = 'scroll';
-	}
-});
+dom.add.addEventListener('click', addDialogBox);
 
-function addTask(text, taskList) {
+function addDialogBox(e) {
+	const target = e.currentTarget.parentElement;
+	target.classList.add('todo__add--active');
+	addTask(target, addedTasks);
+}
+
+function addTask(target) {
+	target.innerHTML = `
+		<input type="text" class="add-todo__input todo__task-input" placeholder="Task name">
+			<div class="add-todo__actions">
+				<button class="add-todo__cancel btn-cancel">Cancel</button>
+				<button class="add-todo__add btn-add">Add task</button>
+			</div>`;
+	const input = target.querySelector('.add-todo__input');
+	const btnCancel = target.querySelector('.add-todo__cancel');
+	const btnAdd = target.querySelector('.add-todo__add');
+
+	input.focus();
+	btnAdd.disabled = true;
+	btnAdd.style.opacity = 0.8;
+	btnAdd.style.pointerEvents = 'none';
+	let text = '';
+
+	input.addEventListener('input', e => {
+		text = e.target.value;
+		btnStatus(text, btnAdd);
+	});
+
+	input.addEventListener('keyup', e => {
+		if (e.key == 'Enter' && !e.target.value == '') {
+			taskHandle(input, text, btnAdd, addedTasks);
+		}
+	});
+
+	input.addEventListener('keydown', e => {
+		if (e.key == 'Escape') {
+			cancelTaskEntry(target);
+		}
+	});
+
+	btnAdd.addEventListener('click', () => {
+		taskHandle(input, text, btnAdd, addedTasks);
+	});
+
+	btnCancel.addEventListener('click', () => {
+		cancelTaskEntry(target);
+	});
+}
+
+function showBackdrop(taskList) {
+	if (!taskList.length == 0) {
+		dom.backdrop.classList.add('todo__backdrop--hidden');
+	} else {
+		dom.backdrop.classList.remove('todo__backdrop--hidden');
+	}
+}
+
+function taskHandle(input, text, btnAdd, taskList) {
 	const timestamp = Date.now();
 	const task = {
 		id: timestamp,
 		text,
 	}
-	showBackdrop(addedTasks);
 	taskList.push(task);
 	taskRender(addedTasks);
+	input.value = '';
+	input.focus();
+	btnAdd.disabled = true;
+	btnAdd.style.opacity = 0.8;
+	btnAdd.style.pointerEvents = 'none';
 	dom.inboxCounter.innerHTML = `${addedTasks.length}`;
-	notif(mssg = 'Task added');
+	showBackdrop(addedTasks);
+	if (dom.inbox.scrollHeight > inboxContentHegiht) {
+		dom.inbox.style.overflowY = 'scroll';
+	}
+	notify(mssg = 'Task added');
 }
 
-function showBackdrop(taskList) {
-	if (!taskList.length == 0) {
-		dom.backdrop.remove();
-	} else {
-		dom.tasks.innerHTML = `<div id="backdrop" class="todo__backdrop backdrop-todo">
-			<div class="backdrop-todo__img">
-				<img src="img/backdrop.jpg" width="380" alt="">
-			</div>
-			<h3 class="backdrop-todo__title">Your peace of mind is priceless</h3>
-			<div class="backdrop-todo__text">
-				<p>Well done! All your team's tasks are organized in the right place.</p>
-			</div>
-		</div>
-		`;
-	}
+function cancelTaskEntry(target) {
+	target.classList.remove('todo__add--active');
+	target.innerHTML = `
+	<button id="add" class="add-todo__btn">
+		<span class="add-todo__plus"></span>
+		<span class="add-todo__text">Add task</span>
+	</button>
+	`;
+	document.getElementById('add').addEventListener('click', addDialogBox);
 }
 
 function taskRender(taskList) {
@@ -156,13 +185,13 @@ function taskRender(taskList) {
 	dom.tasks.innerHTML = htmlContent;
 }
 
-function notif(text) {
-	dom.notif.innerHTML = `<div class="notification__content">
+function notify(text) {
+	dom.notify.innerHTML = `<div class="notification__content">
 		<span class="notification__caption">${text}!</span>
 		<button class="notification__close btn-close" title="Close"></button>
 	</div>`;
-	const notifClose = document.querySelector('.notification__close');
-	notifClose.addEventListener('click', e => {
+	const notifyClose = document.querySelector('.notification__close');
+	notifyClose.addEventListener('click', e => {
 		e.target.parentElement.remove();
 	});
 }
@@ -208,7 +237,10 @@ dom.tasks.addEventListener('click', e => {
 			showBackdrop(addedTasks);
 		}, 300);
 		dom.completedCounter.innerHTML = `${completedTasks.length}`;
-		notif(mssg = 'Task completed');
+		if (dom.inbox.scrollHeight == inboxContentHegiht) {
+			dom.inbox.style.overflowY = 'hidden';
+		}
+		notify(mssg = 'Task completed');
 	}
 
 	if (btnDeleteEl) {
@@ -219,12 +251,15 @@ dom.tasks.addEventListener('click', e => {
 	}
 
 	if (btnEditEl) {
+		document.querySelectorAll('.todo__task').forEach(a => {
+			a.classList.remove('todo__task--editing');
+		});
 		const task = el.parentElement.parentElement.parentElement;
 		const taskId = task.getAttribute('id');
 		const taskText = task.querySelector('.todo__task-text');
 		const taskCheckbox = task.querySelector('.todo__checkbox');
 		const taskActions = task.querySelector('.todo__task-actions');
-		editTask(task, taskId, taskText, taskCheckbox, taskActions);
+		taskEditing(task, taskId, taskText, taskCheckbox, taskActions);
 	}
 });
 
@@ -254,7 +289,7 @@ function changeTaskStatus(id, taskList, completedTaskList) {
 	dom.completed.innerHTML = htmlContent;
 }
 
-function editTask(task, id, text, checkbox, actions) {
+function taskEditing(task, id, text, checkbox, actions) {
 	const taskId = id;
 	task.classList.add('todo__task--editing');
 	actions.classList.add('todo__task-actions--editing');
@@ -281,30 +316,36 @@ function editTask(task, id, text, checkbox, actions) {
 
 	input.addEventListener('keyup', e => {
 		if (e.key == 'Enter' && !e.target.value == '') {
-			taskSave(addedTasks, taskId, input);
+			saveTaskEditing(addedTasks, taskId, input);
 		}
 	});
 
-	btnCancel.addEventListener('click', taskCancel);
+	input.addEventListener('keydown', e => {
+		if (e.key == 'Escape') {
+			cancelTaskEditing();
+		}
+	});
+
+	btnCancel.addEventListener('click', cancelTaskEditing);
 
 	btnSave.addEventListener('click', () => {
-		taskSave(addedTasks, taskId, input);
+		saveTaskEditing(addedTasks, taskId, input);
 	});
 }
 
-function btnStatus(value, btnSave) {
+function btnStatus(value, btn) {
 	if (value === '') {
-		btnSave.disabled = true;
-		btnSave.style.opacity = 0.8;
-		btnSave.style.pointerEvents = 'none';
+		btn.disabled = true;
+		btn.style.opacity = 0.8;
+		btn.style.pointerEvents = 'none';
 	} else {
-		btnSave.disabled = false;
-		btnSave.style.opacity = 1;
-		btnSave.style.pointerEvents = 'all';
+		btn.disabled = false;
+		btn.style.opacity = 1;
+		btn.style.pointerEvents = 'all';
 	}
 }
 
-function taskSave(taskList, id, input) {
+function saveTaskEditing(taskList, id, input) {
 	taskList.forEach(task => {
 		if (task.id === parseInt(id)) {
 			task.text = input.value;
@@ -313,7 +354,7 @@ function taskSave(taskList, id, input) {
 	taskRender(addedTasks);
 }
 
-function taskCancel() {
+function cancelTaskEditing() {
 	taskRender(addedTasks);
 }
 
@@ -335,7 +376,7 @@ function deleteTask(task, id, taskText, taskList) {
 		});
 		modalClose();
 		checkCounter();
-		notif(mssg = 'Task deleted');
+		notify(mssg = 'Task deleted');
 		showBackdrop(addedTasks);
 	});
 }
