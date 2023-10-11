@@ -3,11 +3,16 @@
 @import url("https://fonts.googleapis.com/css?family=Lato:regular,700&display=swap");
 
 :root {
-	--accent: #DB4035;
-	--priamry: #F3F3F3;
-	--scorpion: #5A5A5A;
-	--alto: #D8D8D8;
-	--alabaster: #F7F7F7;
+	--accent: #db4035;
+	--primary: #f3f3f3;
+	--white: #fff;
+	--dark: #171717;
+	--scorpion: #5a5a5a;
+	--alto: #d8d8d8;
+	--alabaster: #f7f7f7;
+	--mercury: #e8e7e7;
+	--mercury-second: #e8e7e747;
+	--mine-shaft: #292929;
 }
 
 body {
@@ -24,12 +29,110 @@ body {
 	padding: 0 15px;
 }
 
+.todo.darkmode {
+	background-color: var(--dark);
+}
+
+.darkmode .todo__switch {
+	background-color: var(--scorpion);
+}
+
+.darkmode .todo__sidebar {
+	background-color: var(--mine-shaft);
+}
+
+.darkmode .todo__header {
+	background-color: #343434;
+}
+
+.darkmode .header-todo__btn {
+	color: var(--white);
+}
+
+.darkmode .header-todo__btn:hover {
+	background-color: var(--mercury-second);
+}
+
+.darkmode .sidebar-todo__button {
+	color: var(--white);
+}
+
+.darkmode .sidebar-todo__button--active {
+	background-color: var(--mercury-second);
+}
+
+.darkmode .sidebar-todo__button:hover {
+	background-color: var(--mercury-second);
+}
+
+.darkmode .switch-todo__indicator{
+	transform: translateX(100%);
+	background-color: var(--dark);
+}
+
+.darkmode .switch-todo__icon {
+	color: var(--white);
+}
+
+.darkmode .todo__title, .completed-todo__caption, .backdrop-todo__title {
+	color: var(--white);
+}
+
+.darkmode .btn-cancel {
+	color: var(--white);
+	background-color: var(--mine-shaft);
+}
+
+.darkmode .add-todo__input {
+	color: var(--white);
+}
+
+.darkmode .todo__task-input {
+	color: var(--white);
+}
+
+.darkmode .todo__task-text {
+	color: var(--white);
+}
+
+.darkmode .modal-del__content {
+	background-color: var(--dark);
+}
+
+.darkmode .modal-del__text {
+	color: var(--alto);
+}
+
+.darkmode .modal-del__text span {
+	color: var(--white);
+}
+
+.darkmode .todo__add--active {
+	border: 1px solid var(--mine-shaft);
+}
+
+.darkmode .add-todo__actions {
+	border-top: 1px solid var(--mine-shaft);
+}
+
+.darkmode .todo__task {
+	border-bottom: 1px solid var(--mine-shaft);
+}
+
+.darkmode .todo__task--editing {
+	border: 1px solid var(--mine-shaft);
+}
+
+.darkmode .todo__task-actions--editing {
+	border-top: 1px solid var(--mine-shaft);
+}
+
 .btn-close {
 	position: relative;
 	width: 30px;
 	height: 30px;
 	padding: 5px;
-	color: #fff;
+	color: var(--white);
 	cursor: pointer;
 	border-radius: 6px;
 	background-color: transparent;
@@ -79,7 +182,7 @@ body {
 }
 
 .btn-save, .btn-delete, .btn-add {
-	color: #fff;
+	color: var(--white);
 	background-color: var(--accent);
 }
 
@@ -116,7 +219,7 @@ body {
 .modal-del__content {
 	position: relative;
 	padding: 80px 15px 15px;
-	background-color: #fff;
+	background-color: var(--white);
 	border-radius: 10px;
 }
 
@@ -171,7 +274,7 @@ body {
 	width: 100%;
 	max-width: 1200px;
 	border-radius: 8px;
-	background: #FFF;
+	background: var(--white);
 	box-shadow: 0px 10px 10px 0px rgba(0, 0, 0, 0.25);
 }
 
@@ -186,46 +289,47 @@ body {
 	background-color: var(--alabaster);
 }
 
-.header-todo__button {
+.header-todo__btn {
 	position: relative;
 	width: 34px;
 	height: 30px;
 	padding: 8px;
 	border-radius: 4px;
 	background-color: transparent;
+	color: var(--scorpion);
 	cursor: pointer;
 	transition: background .2s ease-in-out;
 }
 
-.header-todo__button:hover {
-	background-color: #e8e7e7;
+.header-todo__btn:hover {
+	background-color: var(--mercury);
 }
 
-.header-todo__button::before, .header-todo__button::after{
+.header-todo__btn::before, .header-todo__btn::after{
 	content: '';
 	position: absolute;
 	left: 8px;
 	width: 55%;
 	height: 2px;
-	background-color: var(--scorpion);
+	background-color: currentColor;
 }
 
-.header-todo__button::before {
+.header-todo__btn::before {
 	top: 8px;
 }
 
-.header-todo__button::after {
+.header-todo__btn::after {
 	top: calc(100% - 9px);
 }
 
-.header-todo__button span {
+.header-todo__btn span {
 	position: absolute;
 	left: 8px;
 	top: 51%;
 	transform: translateY(-50%);
 	width: 55%;
 	height: 2px;
-	background-color: var(--scorpion);
+	background-color: currentColor;
 }
 
 .todo__body {
@@ -295,11 +399,11 @@ body {
 }
 
 .sidebar-todo__button:hover {
-	background-color: #e8e7e7;
+	background-color: var(--mercury);
 }
 
 .sidebar-todo__button--active {
-	background-color: #e8e7e7;
+	background-color: var(--mercury);
 	pointer-events: none;
 }
 
@@ -320,11 +424,61 @@ body {
 	flex-direction: column;
 }
 
+.todo__switch {
+	position: relative;
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+	width: 60px;
+	height: 30px;
+	padding: 5px;
+	align-self: flex-end;
+	border-radius: 15px;
+	border: 1px solid var(--primary);
+	background-color: var(--primary);
+	cursor: pointer;
+}
+
+.switch-todo__indicator {
+	position: absolute;
+	background-color: var(--white);
+	width: 25px;
+	height: 25px;
+	border-radius: 50%;
+	transition: transform .3s ease;
+}
+
+.switch-todo__icon-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+.switch-todo__icon {
+	font-size: 14px;
+	color: #ffde59;
+}
+
+.switch-todo__icon.animated {
+	animation: spin 0.5s;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	} from {
+
+	}
+}
+
 .todo__title {
 	margin-bottom: 35px;
 	color: #000;
 	font-size: 31px;
 	font-weight: 700;
+	user-select: none;
 }
 
 .add-todo__btn {
@@ -347,7 +501,7 @@ body {
 
 .add-todo__btn:hover .add-todo__plus {
 	background-color: var(--accent);
-	color: #fff;
+	color: var(--white);
 }
 
 .add-todo__plus {
@@ -620,7 +774,7 @@ body {
 
 .notification__caption {
 	margin-right: 15px;
-	color: #fff;
+	color: var(--white);
 }
 
 @keyframes move-up {

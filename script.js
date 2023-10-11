@@ -9,12 +9,15 @@ let inboxContentHegiht;
 const runtimeSound = new Audio('sources/completed-task.mp3');
 
 const dom = {
+	todo: document.getElementById('todo'),
 	burger: document.getElementById('burger'),
 	sidebar: document.getElementById('sidebar'),
 	inbox: document.getElementById('inbox'),
 	completedTasks: document.getElementById('completed-tasks'),
 	inboxCounter: document.getElementById('inbox-counter'),
 	completedCounter: document.getElementById('completed-counter'),
+	switch: document.getElementById('switch'),
+	switchIcon: document.getElementById('switch__icon'),
 	add: document.getElementById('add'),
 	tasks: document.getElementById('tasks'),
 	navBtns: document.querySelectorAll('.sidebar-todo__button'),
@@ -48,6 +51,45 @@ dom.navBtns.forEach(navBtn => {
 			dom.completedTasks.style.overflowY = 'scroll';
 		}
 	});
+});
+
+function store(value) {
+	localStorage.setItem('darkmode', value);
+}
+
+function load() {
+	const darkmode = localStorage.getItem('darkmode');
+
+	if (!darkmode) {
+		store(false);
+		dom.switchIcon.classList.add('fa-sun');
+	} else if (darkmode == 'true') {
+		dom.todo.classList.add('darkmode');
+		dom.switchIcon.classList.add('fa-moon');
+	} else if (darkmode == 'false') {
+		dom.switchIcon.classList.add('fa-sun');
+	}
+}
+
+load();
+
+dom.switch.addEventListener('click', () => {
+	dom.todo.classList.toggle('darkmode');
+	dom.switchIcon.classList.add('animated');
+
+	store(dom.todo.classList.contains('darkmode'));
+
+	if (dom.todo.classList.contains('darkmode')) {
+		dom.switchIcon.classList.remove('fa-sun');
+		dom.switchIcon.classList.add('fa-moon');
+	} else {
+		dom.switchIcon.classList.remove('fa-moon');
+		dom.switchIcon.classList.add('fa-sun');
+	}
+
+	setTimeout(() => {
+		dom.switchIcon.classList.remove('animated');
+	}, 500);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
