@@ -1,0 +1,613 @@
+@import "./fonts";
+@import "./reset.scss";
+@import "./mixins";
+@import "./vars";
+@import "./base";
+
+.btn-close {
+	position: relative;
+	width: toRem(30);
+	height: toRem(30);
+	padding: toRem(5);
+	color: var(--white);
+	cursor: pointer;
+	border-radius: toRem(6);
+	background-color: transparent;
+	transition: background 0.2s ease-in-out;
+	&:hover {
+		background-color: #d8d8d844;
+	}
+	&::before,
+	&::after {
+		content: "";
+		position: absolute;
+		left: toRem(1);
+		display: block;
+		width: 90%;
+		height: toRem(1);
+		background-color: currentColor;
+	}
+	&::before {
+		transform: rotate(-45deg);
+	}
+	&::after {
+		transform: rotate(45deg);
+	}
+}
+
+.btn-cancel,
+.btn-save,
+.btn-delete,
+.btn-add {
+	min-width: toRem(75);
+	padding: toRem(10);
+	border-radius: toRem(5);
+	font-family: inherit;
+	font-weight: 700;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background 0.1s ease-in-out;
+}
+
+.btn-cancel {
+	background-color: var(--sixth-color);
+	color: var(--seventh-color);
+	&:hover {
+		background-color: var(--ninth-color);
+	}
+}
+
+.btn-save,
+.btn-delete,
+.btn-add {
+	color: var(--white);
+	background-color: var(--accent);
+}
+
+.btn-save:hover,
+.btn-delete:hover,
+.btn-add:hover {
+	background-color: #db4035d4;
+}
+
+.header-todo__btn {
+	position: relative;
+	width: toRem(34);
+	height: toRem(30);
+	padding: toRem(8);
+	border-radius: toRem(4);
+	background-color: transparent;
+	color: var(--seventh-color);
+	cursor: pointer;
+	transition: background 0.2s ease-in-out;
+	&:hover {
+		background-color: var(--eigth-color);
+	}
+	&::before,
+	&::after {
+		content: "";
+		position: absolute;
+		left: toRem(8);
+		width: 55%;
+		height: toRem(2);
+		background-color: currentColor;
+	}
+	&::before {
+		top: toRem(8);
+	}
+	&::after {
+		top: calc(100% - toRem(9));
+	}
+	& span {
+		position: absolute;
+		left: toRem(8);
+		top: 51%;
+		transform: translateY(-50%);
+		width: 55%;
+		height: toRem(2);
+		background-color: currentColor;
+	}
+}
+
+.todo {
+	position: relative;
+	width: 100%;
+	max-width: toRem(1200);
+	border-radius: toRem(8);
+	background: var(--main-color);
+	box-shadow: 0 toRem(10) toRem(10) 0 rgba(0, 0, 0, 0.25);
+	&__header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		column-gap: toRem(15);
+		min-height: toRem(50);
+		margin-bottom: toRem(2);
+		padding: toRem(5) toRem(20);
+		border-radius: toRem(8) toRem(8) 0 0;
+		background-color: var(--fourth-color);
+	}
+	&__body {
+		display: flex;
+		min-height: toRem(600);
+		column-gap: toRem(53);
+	}
+	&__sidebar {
+		max-width: 0;
+		width: 100%;
+		opacity: 0;
+		visibility: hidden;
+		padding: toRem(35) toRem(50) toRem(50) toRem(20);
+		background-color: var(--third-color);
+		border-radius: 0 0 0 toRem(8);
+		transition:
+			opacity 0.3s ease-in-out,
+			max-width 0.3s ease-in-out,
+			visibility 0.3s ease-in-out;
+		&--open {
+			max-width: toRem(350);
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+	&__content {
+		display: none;
+		padding: toRem(30) toRem(43) toRem(30) 0;
+		flex-grow: 1;
+		&--active {
+			display: flex;
+			flex-direction: column;
+		}
+	}
+	&__title {
+		margin-bottom: toRem(35);
+		color: var(--second-color);
+		font-size: toRem(32);
+		font-weight: 700;
+		user-select: none;
+	}
+	&__add--active {
+		display: flex;
+		flex-direction: column;
+		row-gap: toRem(10);
+		padding: toRem(10) 0;
+		border: 1px solid var(--fifth-color);
+		border-radius: toRem(10);
+	}
+	&__tasks {
+		display: flex;
+		flex-direction: column;
+		row-gap: toRem(16);
+		margin-bottom: toRem(5);
+		padding: 0 toRem(5);
+	}
+	&__task {
+		display: flex;
+		align-items: center;
+		min-height: toRem(60);
+		border-bottom: 1px solid var(--fifth-color);
+		cursor: default;
+		&:hover .todo__task-actions {
+			display: flex;
+		}
+	}
+	&__task--editing {
+		flex-direction: column;
+		align-items: stretch;
+		row-gap: toRem(10);
+		padding: toRem(10) 0;
+		border: 1px solid var(--fifth-color);
+		border-radius: toRem(10);
+	}
+	&__checkbox {
+		margin-right: toRem(14);
+		&:hover div::after {
+			opacity: 1;
+			visibility: visible;
+		}
+	}
+	&__checkbox input {
+		display: none;
+	}
+	&__checkbox input:checked + div,
+	&__checkbox input:checked + div::after {
+		animation: 0.4s linear check-animation;
+		animation-iteration-count: 1;
+	}
+	&__checkbox div {
+		position: relative;
+		width: toRem(20);
+		height: toRem(20);
+		border: 2px solid var(--accent);
+		border-radius: 50%;
+		cursor: pointer;
+		background-color: #f121062d;
+	}
+	&__checkbox div::after {
+		content: "";
+		opacity: 0;
+		visibility: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
+		background-image: url("../images/svg/tick.svg");
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+		width: toRem(16);
+		height: toRem(16);
+		transition:
+			opacity 0.2s ease-in-out,
+			visibility 0.2s ease-in-out;
+	}
+	&__task-text {
+		margin-right: toRem(10);
+		color: var(--seventh-color);
+	}
+	&__task-input {
+		padding: 0 toRem(10);
+		font-family: inherit;
+		font-size: inherit;
+		color: var(--seventh-color);
+		background-color: transparent;
+		outline: none;
+	}
+	&__task-actions {
+		display: none;
+		column-gap: toRem(10);
+		margin-left: auto;
+	}
+	&__task-actions--editing {
+		display: flex;
+		justify-content: flex-end;
+		width: 100%;
+		margin-left: 0;
+		padding-top: toRem(10);
+		padding-right: toRem(10);
+		border-top: 1px solid var(--fifth-color);
+		font-family: "Lato", sans-serif;
+	}
+	&__task-delete,
+	&__task-edit {
+		background-color: transparent;
+		padding: 0;
+		cursor: pointer;
+	}
+	&__completed {
+		display: flex;
+		flex-direction: column;
+		row-gap: toRem(24);
+		flex-grow: 1;
+	}
+}
+
+.switch-todo {
+	position: relative;
+	display: flex;
+	align-items: center;
+	flex-shrink: 0;
+	width: toRem(60);
+	height: toRem(32);
+	margin-left: auto;
+	cursor: pointer;
+	&--active .switch-todo__indicator {
+		background-color: #343434d1;
+		border: 0.5px solid var(--scorpion);
+	}
+	&--active .switch-todo__indicator::before {
+		transform: translateY(-50%) translateX(28px);
+		background-color: #1f1f1f;
+	}
+	&__indicator {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: var(--alto);
+		border-radius: toRem(15);
+		border: 0.5px solid var(--alto);
+		transition: background 0.3s ease-in-out;
+		&::before {
+			content: "";
+			position: absolute;
+			z-index: 2;
+			left: 3px;
+			top: 50%;
+			transform: translateY(-50%);
+			width: toRem(24);
+			height: toRem(24);
+			background-color: var(--white);
+			border-radius: toRem(20);
+			transition: transform 0.3s ease-in-out;
+		}
+	}
+	&__img {
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+		z-index: 1;
+	}
+	&__sun {
+		left: 6px;
+	}
+	&__moon {
+		right: 3px;
+	}
+}
+
+.sidebar-todo {
+	&__list {
+		display: flex;
+		flex-direction: column;
+		row-gap: toRem(10);
+	}
+	&__button {
+		position: relative;
+		width: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: toRem(10) toRem(15) toRem(10) toRem(38);
+		border-radius: toRem(8);
+		background-color: transparent;
+		color: var(--second-color);
+		font-size: toRem(22);
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		&--active {
+			background-color: var(--eigth-color);
+			pointer-events: none;
+		}
+		&:hover {
+			background-color: var(--eigth-color);
+		}
+		&::before {
+			content: "";
+			position: absolute;
+			left: toRem(4);
+			top: 50%;
+			transform: translateY(-50%);
+			width: toRem(28);
+			height: toRem(28);
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: center;
+		}
+	}
+	&__button_inbox::before {
+		background-image: url("../images/svg/inbox.svg");
+	}
+	&__button_completed::before {
+		top: 48%;
+		background-image: url("../images/svg/completed.svg");
+	}
+	&__counter {
+		margin-left: toRem(8);
+		font-size: toRem(14);
+		color: var(--scorpion);
+	}
+}
+
+.add-todo {
+	&__btn {
+		display: flex;
+		align-items: center;
+		width: 100%;
+		column-gap: toRem(10);
+		min-height: toRem(20);
+		margin-bottom: toRem(20);
+		background-color: transparent;
+		text-align: left;
+		font-family: inherit;
+		font-size: inherit;
+		cursor: pointer;
+	}
+	&__btn:hover .add-todo__text {
+		color: var(--accent);
+	}
+	&__btn:hover .add-todo__plus {
+		background-color: var(--accent);
+		color: var(--white);
+	}
+	&__plus {
+		position: relative;
+		display: inline-block;
+		width: toRem(18);
+		height: toRem(18);
+		border-radius: 50%;
+		background-color: transparent;
+		color: var(--accent);
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			width: 60%;
+			height: toRem(1);
+			background-color: currentColor;
+		}
+		&::before {
+			transform: translate(-50%, -50%);
+		}
+		&::after {
+			transform: translate(-50%, -50%) rotate(90deg);
+		}
+	}
+	&__text {
+		font-family: inherit;
+		color: var(--scorpion);
+		line-height: 1.5;
+	}
+	&__actions {
+		display: flex;
+		justify-content: flex-end;
+		column-gap: toRem(10);
+		width: 100%;
+		margin-left: 0;
+		padding-top: toRem(10);
+		padding-right: toRem(10);
+		border-top: 1px solid var(--fifth-color);
+	}
+}
+
+.completed-todo {
+	&__task {
+		padding-bottom: toRem(10);
+		border-bottom: 1px solid var(--fifth-color);
+	}
+	&__date {
+		display: block;
+		margin-bottom: toRem(15);
+		padding-bottom: toRem(10);
+		border-bottom: 1px solid var(--fifth-color);
+		font-weight: 700;
+		color: var(--second-color);
+	}
+	&__body {
+		position: relative;
+		padding-left: toRem(20);
+		&::before {
+			content: "";
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: toRem(18);
+			height: toRem(18);
+			background-image: url("../images/svg/tick-round.svg");
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: center;
+		}
+	}
+	&__text {
+		margin-bottom: toRem(8);
+		color: var(--second-color);
+	}
+	&__text span {
+		color: var(--scorpion);
+	}
+	&__time {
+		display: inline-block;
+		font-size: toRem(14);
+		color: var(--scorpion);
+	}
+	&__caption {
+		color: var(--second-color);
+	}
+}
+
+.notification {
+	&__content {
+		position: absolute;
+		left: toRem(20);
+		bottom: toRem(20);
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		max-width: toRem(270);
+		width: 100%;
+		padding: toRem(15) toRem(20);
+		border-radius: toRem(15);
+		background-color: #414040;
+		animation: 0.4s linear move-up;
+		animation-iteration-count: 1;
+	}
+	&__caption {
+		margin-right: toRem(15);
+		color: var(--white);
+	}
+}
+
+.modal-del {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: inherit;
+	background-color: rgba(0, 0, 0, 0.8);
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 0.2s ease-in-out,
+		visibility 0.2s ease-in-out;
+	&__body {
+		position: absolute;
+		min-width: toRem(460);
+		left: 55%;
+		top: 15%;
+		transform: translateX(-50%);
+	}
+	&__content {
+		position: relative;
+		padding: toRem(80) toRem(15) toRem(15);
+		background-color: var(--main-color);
+		border-radius: toRem(10);
+		&::before {
+			content: "";
+			position: absolute;
+			left: toRem(10);
+			top: toRem(10);
+			width: toRem(30);
+			height: toRem(30);
+			background-image: url("../images/svg/info.svg");
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: center;
+		}
+	}
+	&__wrap-btn {
+		position: absolute;
+		right: toRem(10);
+		top: toRem(10);
+	}
+	&__close {
+		color: var(--scorpion);
+		&::before,
+		&::after {
+			left: toRem(4);
+			width: 70%;
+		}
+	}
+	&__text {
+		margin-bottom: toRem(60);
+		color: var(--scorpion);
+	}
+	&__text span {
+		color: var(--second-color);
+		font-weight: 700;
+	}
+	&__actions {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		column-gap: toRem(15);
+	}
+}
+
+.modal-del.modal-del--open {
+	opacity: 1;
+	visibility: visible;
+}
+
+@keyframes move-up {
+	from {
+		bottom: toRem(-50);
+		opacity: 0;
+	}
+	to {
+		bottom: toRem(20);
+		opacity: 1;
+	}
+}
+
+@keyframes check-animation {
+	from {
+		transform: scale(1.3);
+	}
+	to {
+		transform: scale(1);
+	}
+}

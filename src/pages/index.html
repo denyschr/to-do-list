@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>To-do list</title>
+	<link rel="stylesheet" href="css/style.min.css">
+</head>
+
+<body>
+	<div class="wrapper">
+		<div id="todo" class="todo">
+			<div class="todo__header header-todo">
+				<button id="burger" class="header-todo__btn" title="Open/close sidebar">
+					<span></span>
+				</button>
+				<div id="switch" class="todo__switch switch-todo">
+					<div class="switch-todo__img switch-todo__sun">
+						<img src="images/svg/sun.svg" alt="sun">
+					</div>
+					<div class="switch-todo__img switch-todo__moon">
+						<img src="images/svg/moon.svg" alt="moon">
+					</div>
+					<div class="switch-todo__indicator"></div>
+				</div>
+				<div class="header-todo__img">
+					<img src="images/todoist-logo.png" width="26" height="26" alt="Logo">
+				</div>
+			</div>
+			<div class="todo__body">
+				<aside id="sidebar" class="todo__sidebar sidebar-todo todo__sidebar--open">
+					<nav class="sidebar-todo__nav">
+						<ul class="sidebar-todo__list">
+							<li class="sidebar-todo__item">
+								<button class="sidebar-todo__button sidebar-todo__button_inbox sidebar-todo__button--active"
+									data-target="inbox">
+									<span class="sidebar-todo__text">Inbox</span>
+									<span id="inbox-counter" class="sidebar-todo__counter"></span>
+								</button>
+							</li>
+							<li class="sidebar-todo__item">
+								<button class="sidebar-todo__button sidebar-todo__button_completed" data-target="completed-tasks">
+									<span class="sidebar-todo__text">Completed</span>
+									<span id="completed-counter" class="sidebar-todo__counter"></span>
+								</button>
+							</li>
+						</ul>
+					</nav>
+				</aside>
+				<div class="todo__content todo__content--active" id="inbox">
+					<h2 class="todo__title">Inbox</h2>
+					<div id="tasks" class="todo__tasks"></div>
+					<div class="todo__add add-todo">
+						<button id="add" class="add-todo__btn">
+							<span class="add-todo__plus"></span>
+							<span class="add-todo__text">Add task</span>
+						</button>
+					</div>
+				</div>
+				<div class="todo__content" id="completed-tasks">
+					<h2 class="todo__title">Completed tasks</h2>
+					<ul id="completed" class="todo__completed completed-todo">
+						<div class="completed-todo__caption">No completed tasks yet.</div>
+					</ul>
+				</div>
+			</div>
+			<div class="modal-del">
+				<div class="modal-del__body">
+					<div class="modal-del__content">
+						<div class="modal-del__wrap-btn">
+							<button class="modal-del__close btn-close" title="Cancel"></button>
+						</div>
+						<p class="modal-del__text">Are you sure you want to delete <span></span>?</p>
+						<div class="modal-del__actions">
+							<button class="modal-del__cancel btn-cancel" title="Cancel">Cancel</button>
+							<button class="modal-del__remove btn-delete" title="Delete">Delete</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="notification" class="notification"></div>
+		</div>
+	</div>
+	<script src="js/main.min.js"></script>
+</body>
+
+</html>

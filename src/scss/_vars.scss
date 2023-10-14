@@ -1,0 +1,41 @@
+// Fonts
+$fontMain: "Lato", sans-serif;
+$fontSize: toRem(18);
+
+// Colors
+:root {
+	--accent: #db4035; // root
+	--primary: #f3f3f3;
+	--white: #fff;
+	--dark: #1f1f1f;
+	--scorpion: #848484; // root
+	--alto: #d8d8d8;
+	--alabaster: #f7f7f7;
+	--mercury: #e8e7e7;
+	--mercury-second: #e8e7e747;
+	--mine-shaft: #292929;
+}
+
+.light-theme {
+	--main-color: #fff;
+	--second-color: #1f1f1f;
+	--third-color: #f7f7f7;
+	--fourth-color: #f1f1f1;
+	--fifth-color: #d8d8d8;
+	--sixth-color: #e3e2e2;
+	--seventh-color: #848484;
+	--eigth-color: #e8e7e7;
+	--ninth-color: #e3e2e284;
+}
+
+.dark-theme {
+	--main-color: #1f1f1f;
+	--second-color: #fff;
+	--third-color: #292929;
+	--fourth-color: #343434;
+	--fifth-color: #343434;
+	--sixth-color: #343434;
+	--seventh-color: #d8d8d8;
+	--eigth-color: #e8e7e747;
+	--ninth-color: #525151;
+}
