@@ -1,8 +1,8 @@
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const daysOfTheWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-const addedTasks = []
-const completedTasks = [];
+let addedTasks = [];
+let completedTasks = [];
 let completedContentHeight;
 let inboxContentHegiht;
 
@@ -42,7 +42,7 @@ function toggleTheme() {
 	}
 }
 
-function load() {
+function loadTheme() {
 	const themeName = localStorage.getItem('theme');
 	if (themeName == 'light-theme') {
 		initialStateOfTheme('light-theme');
@@ -52,12 +52,32 @@ function load() {
 	}
 }
 
-load();
+loadTheme();
 
 dom.switch.addEventListener('click', e => {
 	e.currentTarget.classList.toggle('switch-todo--active');
 	toggleTheme();
 });
+
+function loadAddedTasks() {
+	const tasks = localStorage.getItem('addedTasks');
+	if (JSON.parse(tasks) != null) {
+		addedTasks = JSON.parse(tasks);
+		taskRender(addedTasks);
+	}
+}
+
+loadAddedTasks();
+
+function loadCompletedTasks() {
+	const tasks = localStorage.getItem('completedTasks');
+	if (JSON.parse(tasks) != null) {
+		completedTasks = JSON.parse(tasks);
+		completedTaskRender(completedTasks);
+	}
+}
+
+loadCompletedTasks();
 
 function initialStateOfSidebar(value) {
 	localStorage.setItem('sidebar', value);
@@ -91,30 +111,19 @@ dom.navBtns.forEach(navBtn => {
 			content.classList.remove('todo__content--active');
 		});
 		document.getElementById(`${path}`).classList.add('todo__content--active');
-		if (dom.completedTasks.scrollHeight > completedContentHeight) {
-			dom.completedTasks.style.overflowY = 'scroll';
-		}
 	});
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-	dom.inbox.classList.remove('todo__content--active');
-	dom.completedTasks.classList.add('todo__content--active');
-	completedContentHeight = dom.completedTasks.offsetHeight;
-	dom.completedTasks.style.maxHeight = `${completedContentHeight}px`;
-	dom.completedTasks.classList.remove('todo__content--active');
-	dom.inbox.classList.add('todo__content--active');
-	inboxContentHegiht = dom.inbox.offsetHeight;
-	dom.inbox.style.maxHeight = `${inboxContentHegiht}px`;
-});
-
-function checkCounter() {
-	if (addedTasks.length == 0) {
-		dom.inboxCounter.innerHTML = '';
+function checkCounter(taskList, counter) {
+	if (taskList.length == 0) {
+		counter.innerHTML = '';
 	} else {
-		dom.inboxCounter.innerHTML = `${addedTasks.length}`;
+		counter.innerHTML = `${taskList.length}`;
 	}
 }
+
+checkCounter(addedTasks, dom.inboxCounter);
+checkCounter(completedTasks, dom.completedCounter);
 
 dom.add.addEventListener('click', addDialogBox);
 
@@ -180,10 +189,8 @@ function taskHandle(input, text, btnAdd, taskList) {
 	btnAdd.disabled = true;
 	btnAdd.style.opacity = 0.8;
 	btnAdd.style.pointerEvents = 'none';
-	dom.inboxCounter.innerHTML = `${addedTasks.length}`;
-	if (dom.inbox.scrollHeight > inboxContentHegiht) {
-		dom.inbox.style.overflowY = 'scroll';
-	}
+	checkCounter(addedTasks, dom.inboxCounter);
+	localStorage.setItem('addedTasks', JSON.stringify(addedTasks));
 	notify(mssg = 'Task added');
 }
 
@@ -221,6 +228,24 @@ function taskRender(taskList) {
 		htmlContent += taskContent;
 	}
 	dom.tasks.innerHTML = htmlContent;
+}
+
+function completedTaskRender(taskList) {
+	let htmlContent = '';
+
+	for (let task in taskList) {
+		const taskContent = `<li id=${taskList[task].id} class="completed-todo__task">
+			<time class="completed-todo__date">${taskList[task].date} ${taskList[task].month} ‧ ${taskList[task].day}</time>
+			<div class="completed-todo__body">
+				<p class="completed-todo__text">
+					<strong>You</strong> completed a task: <span>${taskList[task].text}</span>
+				</p>
+				<time class="completed-todo__time">${taskList[task].hours}:${taskList[task].minutes}</time>
+			</div>
+		</li>`;
+		htmlContent += taskContent;
+	}
+	dom.completed.innerHTML = htmlContent;
 }
 
 function notify(text) {
@@ -272,11 +297,11 @@ dom.tasks.addEventListener('click', e => {
 		setTimeout(() => {
 			task.remove();
 			changeTaskStatus(taskId, addedTasks, completedTasks);
+			localStorage.setItem('addedTasks', JSON.stringify(addedTasks));
+			localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+			checkCounter(addedTasks, dom.inboxCounter);
+			checkCounter(completedTasks, dom.completedCounter);
 		}, 300);
-		dom.completedCounter.innerHTML = `${completedTasks.length}`;
-		if (dom.inbox.scrollHeight == inboxContentHegiht) {
-			dom.inbox.style.overflowY = 'hidden';
-		}
 		notify(mssg = 'Task completed');
 	}
 
@@ -300,16 +325,14 @@ dom.tasks.addEventListener('click', e => {
 	}
 });
 
-function changeTaskStatus(id, taskList, completedTaskList) {
+function changeTaskStatus(id, addedTaskList, completedTaskList) {
 	let htmlContent = '';
 
-	taskList.forEach((task, index) => {
+	addedTaskList.forEach((task, index) => {
 		if (task.id === parseInt(id)) {
-			taskList.splice(index, 1);
+			addedTaskList.splice(index, 1);
 		}
 	});
-
-	checkCounter();
 
 	completedTaskList.forEach(completedTask => {
 		const taskContent = `<li id=${completedTask.id} class="completed-todo__task">
@@ -389,6 +412,7 @@ function saveTaskEditing(taskList, id, input) {
 		}
 	});
 	taskRender(addedTasks);
+	localStorage.setItem('addedTasks', JSON.stringify(addedTasks));
 }
 
 function cancelTaskEditing() {
@@ -411,8 +435,9 @@ function deleteTask(task, id, taskText, taskList) {
 				taskList.splice(index, 1);
 			}
 		});
-		modalClose();
-		checkCounter();
+		localStorage.setItem('addedTasks', JSON.stringify(taskList));
+		checkCounter(addedTasks, dom.inboxCounter);
 		notify(mssg = 'Task deleted');
+		modalClose();
 	});
 }

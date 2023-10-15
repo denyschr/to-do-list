@@ -67,7 +67,7 @@
 .btn-save:hover,
 .btn-delete:hover,
 .btn-add:hover {
-	background-color: #db4035d4;
+	background-color: #f07f77;
 }
 
 .header-todo__btn {
@@ -81,7 +81,7 @@
 	cursor: pointer;
 	transition: background 0.2s ease-in-out;
 	&:hover {
-		background-color: var(--eigth-color);
+		background-color: var(--tenth-color);
 	}
 	&::before,
 	&::after {
@@ -152,8 +152,11 @@
 	}
 	&__content {
 		display: none;
-		padding: toRem(30) toRem(43) toRem(30) 0;
+		padding: toRem(30) toRem(63) toRem(30) 0;
 		flex-grow: 1;
+		max-height: toRem(600);
+		overflow: auto;
+		scrollbar-color: #000;
 		&--active {
 			display: flex;
 			flex-direction: column;
@@ -201,6 +204,9 @@
 	}
 	&__checkbox {
 		margin-right: toRem(14);
+		&:hover div {
+			background-color: var(--eleventh-color);
+		}
 		&:hover div::after {
 			opacity: 1;
 			visibility: visible;
@@ -221,7 +227,7 @@
 		border: 2px solid var(--accent);
 		border-radius: 50%;
 		cursor: pointer;
-		background-color: #f121062d;
+		transition: background 0.2s ease-in-out;
 	}
 	&__checkbox div::after {
 		content: "";
@@ -243,6 +249,7 @@
 	&__task-text {
 		margin-right: toRem(10);
 		color: var(--seventh-color);
+		line-height: 1.2;
 	}
 	&__task-input {
 		padding: 0 toRem(10);
@@ -424,7 +431,7 @@
 			position: absolute;
 			left: 50%;
 			top: 50%;
-			width: 60%;
+			width: 70%;
 			height: toRem(1);
 			background-color: currentColor;
 		}

@@ -4,16 +4,10 @@ $fontSize: toRem(18);
 
 // Colors
 :root {
-	--accent: #db4035; // root
-	--primary: #f3f3f3;
+	--accent: #d8625a;
 	--white: #fff;
-	--dark: #1f1f1f;
-	--scorpion: #848484; // root
+	--scorpion: #848484;
 	--alto: #d8d8d8;
-	--alabaster: #f7f7f7;
-	--mercury: #e8e7e7;
-	--mercury-second: #e8e7e747;
-	--mine-shaft: #292929;
 }
 
 .light-theme {
@@ -26,6 +20,8 @@ $fontSize: toRem(18);
 	--seventh-color: #848484;
 	--eigth-color: #e8e7e7;
 	--ninth-color: #e3e2e284;
+	--tenth-color: #e8e7e7;
+	--eleventh-color: #f6dad8;
 }
 
 .dark-theme {
@@ -36,6 +32,8 @@ $fontSize: toRem(18);
 	--fifth-color: #343434;
 	--sixth-color: #343434;
 	--seventh-color: #d8d8d8;
-	--eigth-color: #e8e7e747;
+	--eigth-color: #363636;
 	--ninth-color: #525151;
+	--tenth-color: #717171;
+	--eleventh-color: #4b2e2c;
 }
